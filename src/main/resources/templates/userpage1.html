@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <h2>Новости <br> Только для залогинившихся пользователей.</h2>
+    <form>
+        HELLO <th th:text="${user.getUsername()}"></th>
+    </form>
+    <h4><a href="/">Главная</a></h4>
+    <h4><a th:href="@{/logout}">Выйти</a></h4>
+</div>
+</body>
+</html>

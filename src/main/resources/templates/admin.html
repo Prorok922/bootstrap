@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <title>Spring Security Example</title>
+</head>
+<body>
+<h1>ТОЛЬКО АДМИН</h1>
+<div>
+    <table border="5">
+        <tr>
+            <th>Username</th>
+            <th>password</th>
+            <th>Email</th>
+        </tr>
+
+        <tr th:each="user: ${userList}">
+            <th th:text="${user.getUsername()}"></th>
+            <th th:text="${user.getPassword()}"></th>
+            <th th:text="${user.getEmail()}"></th>
+            <td>
+                <a th:href="@{/admin/{id}/edit(id=${user.getId()})}">Edit</a>
+            </td>
+            <td>
+                <a th:href="@{/admin/{id}/delete(id=${user.getId()})}">Delete</a>
+            </td>
+        </tr>
+    </table>
+
+    <form th:method="POST" th:action="@{/admin/new-user}" th:object="${newUser}">
+        <p>
+            <label for="username">Name</label>
+            <input type="text" th:field="*{username}" id="username" size="35">
+        </p>
+        <p>
+            <label for="password">Password</label>
+            <input type="text" th:field="*{password}" id="password" size="31">
+        </p>
+        <p>
+            <label for="email">Email</label>
+            <input type="text" th:field="*{email}" id="email" size="35">
+        </p>
+        <p><input type="submit" value="ADD USER"></p>
+    </form>
+
+    <h4><a href="/">Главная</a></h4>
+    <h4><a th:href="@{/logout}">Выйти</a></h4>
+</div>
+</body>
+</html>
