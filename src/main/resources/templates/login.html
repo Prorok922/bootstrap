@@ -2,22 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+          integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
 </head>
+
 <body>
-<div class="form_auth_block">
-    <div class="form_auth_block_content">
-        <p class="form_auth_block_head_text">Авторизация</p>
-        <form class="form_auth_style" action="#" method="post">
-            <label>Введите Ваш имейл</label>
-            <input type="text" name="username" placeholder="Введите Ваше имя" required >
-            <label>Введите Ваш пароль</label>
-            <input type="password" name="password" placeholder="Введите пароль" required >
-
-            <button class="form_auth_button" type="submit" name="form_auth_submit">Войти</button>
-
-        </form>
+    <div class="container-fluid">
+        <div class="row  justify-content-center">
+            <div class="col-2 align-self-center">
+                <form name="login" th:action="@{/login}" method="post" class="form-group">
+                    <h4>Please sign in</h4>
+                    <div class="form-group">
+                        <input type="email" class="form-control" name="email" placeholder="Email address">
+                        <input type="password" class="form-control" name="password" placeholder="Password">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block"  style="margin-top: 10px" >Sign in</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-</div>
+
+
+<!-- Отдельные JS для Popper и Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js" integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2" crossorigin="anonymous"></script>
+
 </body>
 </html>

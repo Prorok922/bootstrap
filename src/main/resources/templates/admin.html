@@ -1,50 +1,206 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+          integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
     <title>Spring Security Example</title>
+
+
 </head>
 <body>
-<h1>ТОЛЬКО АДМИН</h1>
-<div>
-    <table border="5">
-        <tr>
-            <th>Username</th>
-            <th>password</th>
-            <th>Email</th>
-        </tr>
+<!--верхняя строка-->
+    <nav class="navbar bg-dark">
+        <h5 class="text-light"><b><span sec:authentication="name">
+            </span> with roles: <span sec:authorize="hasRole('ROLE_ADMIN')">ADMIN </span>
+            <span sec:authorize="hasRole('ROLE_USER')">USER</span></b>
+        </h5>
 
-        <tr th:each="user: ${userList}">
-            <th th:text="${user.getUsername()}"></th>
-            <th th:text="${user.getPassword()}"></th>
-            <th th:text="${user.getEmail()}"></th>
-            <td>
-                <a th:href="@{/admin/{id}/edit(id=${user.getId()})}">Edit</a>
-            </td>
-            <td>
-                <a th:href="@{/admin/{id}/delete(id=${user.getId()})}">Delete</a>
-            </td>
-        </tr>
-    </table>
+        <a class="text-secondary" th:href="@{/logout}">Logout</a>
+    </nav>
+<!--верхняя строка конец-->
+<div class="container-xxl">
+    <div class="row">
+    <!--левая панель-->
+        <div class="col-2">
+            <div class="list-group" id="list-tab-left" role="tablist">
+                <a class="list-group-item list-group-item-action active" id="list-admin-list" data-toggle="list" href="#list-admin" role="tab" aria-controls="list-admin">Admin</a>
+                <a class="list-group-item list-group-item-action" id="list-user-list" data-toggle="list" href="#list-user" role="tab" aria-controls="list-user">User</a>
+            </div>
+        </div>
+    <!--левая панель-->
 
-    <form th:method="POST" th:action="@{/admin/new-user}" th:object="${newUser}">
-        <p>
-            <label for="username">Name</label>
-            <input type="text" th:field="*{username}" id="username" size="35">
-        </p>
-        <p>
-            <label for="password">Password</label>
-            <input type="text" th:field="*{password}" id="password" size="31">
-        </p>
-        <p>
-            <label for="email">Email</label>
-            <input type="text" th:field="*{email}" id="email" size="35">
-        </p>
-        <p><input type="submit" value="ADD USER"></p>
-    </form>
+        <div class="col">
+            <div class="tab-content" id="nav-tabLeftContent">
+    <!--средняя панель-->
+                <div class="tab-pane fade show active" id="list-admin" role="tabpanel" aria-labelledby="list-admin-list">
+                    <h1>Admin panel</h1>
+                    <div class="list-group list-group-horizontal col-2 list-group-item-action" id="list-tab" role="tablist">
+                        <a class="list-group-item list-group-item-action active list-group-item-light" id="list-tableUser-list" data-toggle="list" href="#list-tableUser" role="tab" aria-controls="list-tableUser">Users table</a>
+                        <a class="list-group-item list-group-item-action" id="list-newUser-list" data-toggle="list" href="#list-newUser" role="tab" aria-controls="list-newUser">New user</a>
+                    </div>
+    <!--содержимое средней панели-->
+                    <div class="tab-content" id="nav-tabMiddleContent">
+    <!--таблица пользователей-->
+                        <div class="tab-pane fade show active" id="list-tableUser" role="tabpanel" aria-labelledby="list-tableUser-list">
+                            <div class="card-header">
+                                <h4>All users</h4>
+                            </div>
+                            <div>
+                                <table class="table table-striped">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Age</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
 
-    <h4><a href="/">Главная</a></h4>
-    <h4><a th:href="@{/logout}">Выйти</a></h4>
+                                    <tr th:each="user1: ${userList}">
+                                        <th th:text="${user1.getId()}"></th>
+                                        <th th:text="${user1.getFirstName()}"></th>
+                                        <th th:text="${user1.getLastName()}"></th>
+                                        <th th:text="${user1.getAge()}"></th>
+                                        <th th:text="${user1.getEmail()}"></th>
+                                        <th th:utext="${user1.getRoleString()}"></th>
+                                        <td>
+                                            <a type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+
+                                               th:data-bs-target="${'#editModal'+user1.id}">Edit</a>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/admin/{id}/delete(id=${user1.getId()})}" class="btn btn-danger">Delete</a>
+                                        </td>
+
+                                        <!--модальное окно изменения пользователя-->
+                                        <div class="modal fade" th:id="${'editModal'+user1.id}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Заголовок модального окна</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="container-fluid">
+                                                            <div class="col row  justify-content-center">
+                                                                <div class="align-self-center h5">
+                                                                    <form th:method="PATCH" action="#" th:action="@{/admin/{id}(id=${user1.getId()})}" th:object="${user1}">
+                                                                        <label for="id">Enter ID: </label>
+                                                                        <input type="text" th:value="*{id}" id="id">
+                                                                        <br>
+                                                                        <label class="row  justify-content-center" for="FirstNameEdit">First Name</label>
+                                                                        <input  class="form-control" type="text" th:value="*{firstName}" id="FirstNameEdit">
+                                                                        <br>
+                                                                        <label class="row  justify-content-center" for="LastNameEdit">Last Name</label>
+                                                                        <input  class="form-control" type="text" th:value="*{lastName}" id="LastNameEdit">
+                                                                        <br>
+                                                                        <label class="row  justify-content-center" for="AgeEdit">Age</label>
+                                                                        <input  class="form-control" type="text" th:value="*{age}" id="AgeEdit">
+                                                                        <br>
+                                                                        <label class="row  justify-content-center" for="emailEdit">Email</label>
+                                                                        <input  class="form-control" type="text" th:value="*{email}" id="emailEdit">
+                                                                        <br>
+                                                                        <label class="row  justify-content-center" for="passwordEdit">Password</label>
+                                                                        <input  class="form-control" type="password" th:value="*{password}" id="passwordEdit">
+                                                                        <br>
+                                                                        <label class="row  justify-content-center" for="roleEdit">Role</label>
+                                                                        <select class="form-control" size="2" id="roleEdit" name="role">
+                                                                            <option>ADMIN</option>
+                                                                            <option>USER</option>
+                                                                        </select>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                                                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--модальное окно изменения пользователя конец-->
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+    <!--таблица пользователей конец-->
+
+    <!--создание пользователей-->
+                        <div class="tab-pane fade" id="list-newUser" role="tabpanel" aria-labelledby="list-newUser-list">
+                            <div class="card-header">
+                                <h4>Add new user</h4>
+                            </div>
+                            <div class="container-fluid">
+                                <div class="col row  justify-content-center">
+                                    <div class="col-3 align-self-center h5">
+                                        <form th:method="POST" th:action="@{/admin/new-user}" th:object="${newUser}">
+                                            <div class="form-group">
+                                                <label class="row  justify-content-center" for="FirstNameNew">First Name</label>
+                                                <input  class="form-control" type="text" th:field="*{firstName}" id="FirstNameNew">
+                                                <br>
+                                                <label class="row  justify-content-center" for="LastNameNew">Last Name</label>
+                                                <input  class="form-control" type="text" th:field="*{lastName}" id="LastNameNew">
+                                                <br>
+                                                <label class="row  justify-content-center" for="AgeNew">Age</label>
+                                                <input  class="form-control" type="text" th:field="*{age}" id="AgeNew">
+                                                <br>
+                                                <label class="row  justify-content-center" for="emailNew">Email</label>
+                                                <input  class="form-control" type="text" th:field="*{email}" id="emailNew">
+                                                <br>
+                                                <label class="row  justify-content-center" for="passwordNew">Password</label>
+                                                <input  class="form-control" type="password" th:field="*{password}" id="passwordNew">
+                                                <br>
+                                                <label class="row  justify-content-center" for="roleNew">Role</label>
+                                                <select class="form-control" size="2" id="roleNew" name="role">
+                                                    <option>ADMIN</option>
+                                                    <option>USER</option>
+                                                </select>
+
+                                            </div>
+                                            <center><input type="submit" class="btn btn-success" value="Add new user"></center>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    <!--создание пользователей конец-->
+                    </div>
+    <!--содержимое средней панели конец-->
+                </div>
+    <!--средняя панель конец-->
+
+    <!--данные страницы пользователя-->
+                <div class="tab-pane fade" id="list-user" role="tabpanel" aria-labelledby="list-user-list">...</div>
+    <!--данные страницы пользователя конец-->
+            </div>
+        </div>
+    </div>
 </div>
+
+
+
+
+
+
+
+<!-- Вариант 2: Отдельные JS для Popper и Bootstrap -->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js" integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2" crossorigin="anonymous"></script>
+
 </body>
 </html>

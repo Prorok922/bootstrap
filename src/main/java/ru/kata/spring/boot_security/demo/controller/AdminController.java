@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.controller;
 
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -11,8 +12,12 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
+
+import java.security.Principal;
+import java.util.Collections;
 
 
 @Controller
@@ -36,9 +41,9 @@ public class AdminController {
 
 
     @PostMapping("/new-user")
-    public String createNewUser(@ModelAttribute("newUser") User newUser) {
+    public String createNewUser(@ModelAttribute("newUser") User newUser, @ModelAttribute("role") String role) {
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-        userService.saveUser(newUser);
+        userService.saveUser(newUser, role);
         return "redirect:/admin/";
     }
 
