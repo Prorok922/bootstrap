@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,6 +19,8 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -36,6 +39,10 @@ public class AdminController {
     public String showAdminRootPage(Model model) {
         model.addAttribute("userList", userService.getAllUsers());
         model.addAttribute("newUser", new User());
+
+        String role2 = "null";
+        model.addAttribute("role2", role2);
+        System.out.println(role2);
         return "admin";
     }
 
@@ -64,5 +71,15 @@ public class AdminController {
     public String deleteUser(@ModelAttribute("user") User deletedUser, @PathVariable("id") long id) {
         userService.removeUser(id);
         return "redirect:/admin/";
+    }
+
+    @PostMapping("/update")
+    public String updateUser(User user, @ModelAttribute("role1") String role1, Model model) {
+        String role2 = "null";
+        model.addAttribute("role2", role2);
+        userService.updateUser(user, role1);
+        System.out.println(role1);
+        System.out.println(role2);
+        return "redirect:/admin";
     }
 }

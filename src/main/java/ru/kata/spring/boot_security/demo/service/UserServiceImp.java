@@ -32,7 +32,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public User getUserById(long id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id);
     }
 
     @Override
@@ -52,21 +52,29 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public boolean removeUser(long id) {
-        if (userRepository.findById(id).isPresent()) {
-            userRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    public void removeUser(long id) {
+        userRepository.deleteById(id);
     }
 
     @Override
     public void updateUser(User user) {
         User userBas = getUserById(user.getId());
-        System.out.println(userBas);
-        System.out.println(user);
-        if(!userBas.getPassword().equals(user.getPassword()) & user.getPassword()!=null) {
+        if(!userBas.getPassword().equals(user.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateUser(User user, String role) {
+        User userBas = getUserById(user.getId());
+        if(!userBas.getPassword().equals(user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        if (role.equals("ADMIN")) {
+            user.setRoles(Set.of(new Role(1L, "ROLE_ADMIN"), new Role(2L, "ROLE_USER")));
+        } else {
+            user.setRoles(Collections.singleton(new Role(2L, "ROLE_USER")));
         }
         userRepository.save(user);
     }

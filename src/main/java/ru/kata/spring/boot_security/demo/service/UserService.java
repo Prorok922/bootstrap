@@ -11,6 +11,10 @@ public interface UserService extends UserDetailsService {
     List<User> getAllUsers ();
     User getUserById(long id);
     boolean saveUser(User user, String role);
-    boolean removeUser(long id);
+    void removeUser(long id);
     void updateUser(User user);
+    void updateUser(User user, String role);
+
+//    void updateUser(User user, Long id);
+//    public User save(User user);
 }
