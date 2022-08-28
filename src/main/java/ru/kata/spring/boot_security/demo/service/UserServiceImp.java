@@ -57,15 +57,6 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public void updateUser(User user) {
-        User userBas = getUserById(user.getId());
-        if(!userBas.getPassword().equals(user.getPassword())) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-        userRepository.save(user);
-    }
-
-    @Override
     public void updateUser(User user, String role) {
         User userBas = getUserById(user.getId());
         if(!userBas.getPassword().equals(user.getPassword())) {
@@ -73,8 +64,10 @@ public class UserServiceImp implements UserService {
         }
         if (role.equals("ADMIN")) {
             user.setRoles(Set.of(new Role(1L, "ROLE_ADMIN"), new Role(2L, "ROLE_USER")));
-        } else {
+        } else if (role.equals("USER")){
             user.setRoles(Collections.singleton(new Role(2L, "ROLE_USER")));
+        } else {
+            user.setRoles(userBas.getRoles());
         }
         userRepository.save(user);
     }
@@ -87,5 +80,14 @@ public class UserServiceImp implements UserService {
             throw new UsernameNotFoundException("User not found");
         }
         return user.getUserDetails();
+    }
+
+    public User loadUserByUserEmail(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        return user;
     }
 }
