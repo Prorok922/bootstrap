@@ -20,10 +20,9 @@ import java.security.Principal;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    private UserService userService;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
     public AdminController(PasswordEncoder passwordEncoder, UserService userService) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
